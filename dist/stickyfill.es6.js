@@ -83,7 +83,7 @@ function getDocOffsetTop (node) {
  * 4. Sticky class
  */
 class Sticky {
-    constructor (node) {
+    constructor (node, applyFixForIE = false) {
         if (!(node instanceof HTMLElement))
             throw new Error('First argument must be HTMLElement');
         if (stickies.some(sticky => sticky._node === node))
@@ -92,7 +92,7 @@ class Sticky {
         this._node = node;
         this._stickyMode = null;
         this._active = false;
-
+        this._applyFixForIE = applyFixForIE;
         stickies.push(this);
 
         this.refresh();
@@ -260,7 +260,8 @@ class Sticky {
                     width: 'auto',
                     marginLeft: 0,
                     marginRight: 0,
-                    marginTop: 0
+                    marginTop: 0,
+                    zIndex: this._applyFixForIE ? 1 : undefined,
                 });
                 break;
 
@@ -343,7 +344,7 @@ const Stickyfill = {
         this.refreshAll();
     },
 
-    addOne (node) {
+    addOne (node, applyFixForIE) {
         // Check whether it’s a node
         if (!(node instanceof HTMLElement)) {
             // Maybe it’s a node list of some sort?
@@ -359,7 +360,7 @@ const Stickyfill = {
         }
 
         // Create and return new sticky
-        return new Sticky(node);
+        return new Sticky(node, applyFixForIE);
     },
 
     add (nodeList) {

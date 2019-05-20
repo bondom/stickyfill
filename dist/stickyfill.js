@@ -87,6 +87,8 @@
     
     var Sticky = function () {
         function Sticky(node) {
+            var applyFixForIE = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+    
             _classCallCheck(this, Sticky);
     
             if (!(node instanceof HTMLElement)) throw new Error('First argument must be HTMLElement');
@@ -97,7 +99,7 @@
             this._node = node;
             this._stickyMode = null;
             this._active = false;
-    
+            this._applyFixForIE = applyFixForIE;
             stickies.push(this);
     
             this.refresh();
@@ -258,7 +260,8 @@
                             width: 'auto',
                             marginLeft: 0,
                             marginRight: 0,
-                            marginTop: 0
+                            marginTop: 0,
+                            zIndex: this._applyFixForIE ? 1 : undefined
                         });
                         break;
     
@@ -350,7 +353,7 @@
     
             this.refreshAll();
         },
-        addOne: function addOne(node) {
+        addOne: function addOne(node, applyFixForIE) {
             // Check whether it’s a node
             if (!(node instanceof HTMLElement)) {
                 // Maybe it’s a node list of some sort?
@@ -365,7 +368,7 @@
             }
     
             // Create and return new sticky
-            return new Sticky(node);
+            return new Sticky(node, applyFixForIE);
         },
         add: function add(nodeList) {
             // If it’s a node make an array of one node
